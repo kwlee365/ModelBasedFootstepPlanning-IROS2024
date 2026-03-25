@@ -11,7 +11,7 @@ from gym.envs.base.legged_robot_config \
 class HumanoidControllerCfg(LeggedRobotCfg):
     class env(LeggedRobotCfg.env):
         num_envs = 4096
-        num_actuators = 10
+        num_actuators = 12
         episode_length_s = 5 # 100
 
     class terrain(LeggedRobotCfg.terrain):
@@ -38,7 +38,7 @@ class HumanoidControllerCfg(LeggedRobotCfg):
     class init_state(LeggedRobotCfg.init_state):
         # reset_mode = 'reset_to_range' # 'reset_to_basic'
         reset_mode = 'reset_to_basic' # 'reset_to_basic'
-        pos = [0., 0., 0.62]        # x,y,z [m]
+        pos = [0., 0., 0.88]        # x,y,z [m]
         rot = [0.0, 0.0, 0.0, 1.0]  # x,y,z,w [quat]
         lin_vel = [0.0, 0.0, 0.0]   # x,y,z [m/s]
         ang_vel = [0.0, 0.0, 0.0]   # x,y,z [rad/s]
@@ -47,7 +47,7 @@ class HumanoidControllerCfg(LeggedRobotCfg):
         root_pos_range = [
             [0., 0.],  # x
             [0., 0.],  # y
-            [0.62, 0.62],  # z
+            [0.88, 0.88],  # z
             [-torch.pi/10, torch.pi/10],  # roll
             [-torch.pi/10, torch.pi/10],  # pitch
             [-torch.pi/10, torch.pi/10]   # yaw
@@ -64,147 +64,84 @@ class HumanoidControllerCfg(LeggedRobotCfg):
         ]
 
         default_joint_angles = {
-            '01_right_hip_yaw': 0.,
-            '02_right_hip_abad': 0.1,
-            '03_right_hip_pitch': -0.667751,
-            '04_right_knee': 1.4087,  # 0.6
-            '05_right_ankle': -0.708876,
-            '06_left_hip_yaw': 0.,
-            '07_left_hip_abad': 0.1,
-            '08_left_hip_pitch': -0.667751,
-            '09_left_knee': 1.4087,  # 0.6
-            '10_left_ankle': -0.708876,
+            'L_HipRoll_Joint': 0.0,
+            'L_HipPitch_Joint': 0.36,
+            'L_HipYaw_Joint': 0.0,
+            'L_Knee_Joint': 0.77,
+            'L_AnklePitch_Joint': -0.41,
+            'L_AnkleRoll_Joint': 0.0,
+            'R_HipRoll_Joint': 0.0,
+            'R_HipPitch_Joint': -0.36,
+            'R_HipYaw_Joint': 0.0,
+            'R_Knee_Joint': -0.77,
+            'R_AnklePitch_Joint': 0.41,
+            'R_AnkleRoll_Joint': 0.0,
         }
 
+        # p73_walker.urdf joint limits
         dof_pos_range = {
-            '01_right_hip_yaw': [-0.1, 0.1],
-            '02_right_hip_abad': [-0.1, 0.3],
-            '03_right_hip_pitch': [-0.8, -0.4],
-            '04_right_knee': [1.3, 1.5],
-            '05_right_ankle': [-0.9, -0.5],
-            '06_left_hip_yaw': [-0.1, 0.1],
-            '07_left_hip_abad': [-0.1, 0.3],
-            '08_left_hip_pitch': [-0.8, -0.4],
-            '09_left_knee': [1.3, 1.5],
-            '10_left_ankle': [-0.9, -0.5],
+            'L_HipRoll_Joint': [-0.3, 0.58],
+            'L_HipPitch_Joint': [-1.57, 2.09],
+            'L_HipYaw_Joint': [-0.78, 0.78],
+            'L_Knee_Joint': [0.0, 2.56],
+            'L_AnklePitch_Joint': [-1.05, 0.7],
+            'L_AnkleRoll_Joint': [-0.42, 0.42],
+            'R_HipRoll_Joint': [-0.3, 0.58],
+            'R_HipPitch_Joint': [-2.09, 1.57],
+            'R_HipYaw_Joint': [-0.78, 0.78],
+            'R_Knee_Joint': [-2.56, 0.0],
+            'R_AnklePitch_Joint': [-0.7, 1.05],
+            'R_AnkleRoll_Joint': [-0.42, 0.42],
         }
 
+        # p73_walker.urdf velocity limits (all leg joints: 10 rad/s)
         dof_vel_range = {
-            '01_right_hip_yaw': [-0.1, 0.1],
-            '02_right_hip_abad': [-0.1, 0.1],
-            '03_right_hip_pitch': [-0.1, 0.1],
-            '04_right_knee': [-0.1, 0.1],
-            '05_right_ankle': [-0.1, 0.1],
-            '06_left_hip_yaw': [-0.1, 0.1],
-            '07_left_hip_abad': [-0.1, 0.1],
-            '08_left_hip_pitch': [-0.1, 0.1],
-            '09_left_knee': [-0.1, 0.1],
-            '10_left_ankle': [-0.1, 0.1],
+            'L_HipRoll_Joint': [-10.0, 10.0],
+            'L_HipPitch_Joint': [-10.0, 10.0],
+            'L_HipYaw_Joint': [-10.0, 10.0],
+            'L_Knee_Joint': [-10.0, 10.0],
+            'L_AnklePitch_Joint': [-10.0, 10.0],
+            'L_AnkleRoll_Joint': [-10.0, 10.0],
+            'R_HipRoll_Joint': [-10.0, 10.0],
+            'R_HipPitch_Joint': [-10.0, 10.0],
+            'R_HipYaw_Joint': [-10.0, 10.0],
+            'R_Knee_Joint': [-10.0, 10.0],
+            'R_AnklePitch_Joint': [-10.0, 10.0],
+            'R_AnkleRoll_Joint': [-10.0, 10.0],
         }
-
-    # class init_state(LeggedRobotCfg.init_state):
-    #     reset_mode = 'reset_to_range'
-    #     pos = [0., 0., 0.77]        # x,y,z [m]
-    #     rot = [0.0, 0.0, 0.0, 1.0]  # x,y,z,w [quat]
-    #     lin_vel = [0.0, 0.0, 0.0]   # x,y,z [m/s]
-    #     ang_vel = [0.0, 0.0, 0.0]   # x,y,z [rad/s]
-
-    #     # ranges for [x, y, z, roll, pitch, yaw]
-    #     root_pos_range = [
-    #         [0., 0.],  # x
-    #         [0., 0.],  # y
-    #         [0.77, 0.77],  # z
-    #         [-torch.pi/20, torch.pi/20],  # roll
-    #         [-torch.pi/20, torch.pi/20],  # pitch
-    #         [-torch.pi/20, torch.pi/20]   # yaw
-    #     ]
-
-    #     # ranges for [v_x, v_y, v_z, w_x, w_y, w_z]
-    #     root_vel_range = [
-    #         [-.1, .1],  # x
-    #         [-.1, .1],  # y
-    #         [-.1, .1],  # z
-    #         [-.1, .1],  # roll
-    #         [-.1, .1],  # pitch
-    #         [-.1, .1]   # yaw
-    #     ]
-
-    #     default_joint_angles = {
-    #         '01_right_hip_yaw': 0.,
-    #         '02_right_hip_abad': 0.,
-    #         '03_right_hip_pitch': -0.2,
-    #         '04_right_knee': 0.6,
-    #         '05_right_ankle': 0.,
-    #         '06_left_hip_yaw': 0.,
-    #         '07_left_hip_abad': 0.,
-    #         '08_left_hip_pitch': -0.2,
-    #         '09_left_knee': 0.6,
-    #         '10_left_ankle': 0.,
-    #     }
-
-    #     dof_pos_range = {
-    #         '01_right_hip_yaw': [-0.1, 0.1],
-    #         '02_right_hip_abad': [-0.1, 0.1],
-    #         '03_right_hip_pitch': [-0.2, 0.2],
-    #         '04_right_knee': [0.6, 0.7],
-    #         '05_right_ankle': [-0.3, 0.0],
-    #         '06_left_hip_yaw': [-0.1, 0.1],
-    #         '07_left_hip_abad': [-0.1, 0.1],
-    #         '08_left_hip_pitch': [-0.2, 0.2],
-    #         '09_left_knee': [0.6, 0.7],
-    #         '10_left_ankle': [-0.3, 0.0],
-    #     }
-
-    #     dof_vel_range = {
-    #         '01_right_hip_yaw': [-0.1, 0.1],
-    #         '02_right_hip_abad': [-0.1, 0.1],
-    #         '03_right_hip_pitch': [-0.1, 0.1],
-    #         '04_right_knee': [-0.1, 0.1],
-    #         '05_right_ankle': [-0.1, 0.1],
-    #         '06_left_hip_yaw': [-0.1, 0.1],
-    #         '07_left_hip_abad': [-0.1, 0.1],
-    #         '08_left_hip_pitch': [-0.1, 0.1],
-    #         '09_left_knee': [-0.1, 0.1],
-    #         '10_left_ankle': [-0.1, 0.1],
-    #     }
 
     class control(LeggedRobotCfg.control):
         # stiffness and damping for joints
         stiffness = {
-            '01_right_hip_yaw': 30.,
-            '02_right_hip_abad': 30.,
-            '03_right_hip_pitch': 30.,
-            '04_right_knee': 30.,
-            '05_right_ankle': 30.,
-            '06_left_hip_yaw': 30.,
-            '07_left_hip_abad': 30.,
-            '08_left_hip_pitch': 30.,
-            '09_left_knee': 30.,
-            '10_left_ankle': 30.,
+            'L_HipRoll_Joint': 900.,
+            'L_HipPitch_Joint': 900.,
+            'L_HipYaw_Joint': 900.,
+            'L_Knee_Joint': 900.,
+            'L_AnklePitch_Joint': 900.,
+            'L_AnkleRoll_Joint': 900.,
+            'R_HipRoll_Joint': 900.,
+            'R_HipPitch_Joint': 900.,
+            'R_HipYaw_Joint': 900.,
+            'R_Knee_Joint': 900.,
+            'R_AnklePitch_Joint': 900.,
+            'R_AnkleRoll_Joint': 900.,
+            
         }
-        # damping = {
-        #     '01_right_hip_yaw': 3.,
-        #     '02_right_hip_abad': 3.,
-        #     '03_right_hip_pitch': 3.,
-        #     '04_right_knee': 3.,
-        #     '05_right_ankle': 3.,
-        #     '06_left_hip_yaw': 3.,
-        #     '07_left_hip_abad': 3.,
-        #     '08_left_hip_pitch': 3.,
-        #     '09_left_knee': 3.,
-        #     '10_left_ankle': 3.
-        # }
+
         damping = {
-            '01_right_hip_yaw': 1.,
-            '02_right_hip_abad': 1.,
-            '03_right_hip_pitch': 1.,
-            '04_right_knee': 1.,
-            '05_right_ankle': 1.,
-            '06_left_hip_yaw': 1.,
-            '07_left_hip_abad': 1.,
-            '08_left_hip_pitch': 1.,
-            '09_left_knee': 1.,
-            '10_left_ankle': 1.
+            'L_HipRoll_Joint': 60.,
+            'L_HipPitch_Joint': 60.,
+            'L_HipYaw_Joint': 60.,
+            'L_Knee_Joint': 60.,
+            'L_AnklePitch_Joint': 60.,
+            'L_AnkleRoll_Joint': 60.,
+            'R_HipRoll_Joint': 60.,
+            'R_HipPitch_Joint': 60.,
+            'R_HipYaw_Joint': 60.,
+            'R_Knee_Joint': 60.,
+            'R_AnklePitch_Joint': 60.,
+            'R_AnkleRoll_Joint': 60.,
+            
         }
 
         actuation_scale = 1.0
@@ -224,19 +161,17 @@ class HumanoidControllerCfg(LeggedRobotCfg):
         sample_angle_offset = 20
         sample_radius_offset = 0.05
 
-        dstep_length = 0.5
-        dstep_width = 0.3
+        dstep_length = 0.2
+        dstep_width = 0.2
 
         class ranges(LeggedRobotCfg.commands.ranges):
             # TRAINING STEP COMMAND RANGES #
             sample_period = [35, 36] # [20, 21] # equal to gait frequency
-            dstep_width = [0.3, 0.3] # [0.2, 0.4] # min max [m]
+            dstep_width = [0.2, 0.2] # [0.2, 0.4] # min max [m]
 
-            lin_vel_x = [-3.0, 3.0] # min max [m/s]
-            lin_vel_y = 1.5 # min max [m/s]
-            lin_vel_x = [-2.0, 2.0] # [-3.0, 3.0] # min max [m/s]
-            lin_vel_y = 2. # 1.5   # min max [m/s]
-            yaw_vel = 0.    # min max [rad/s]
+            lin_vel_x = [-0.3, 0.3] # [-3.0, 3.0] # min max [m/s]
+            lin_vel_y = 0.3 # 1.5   # min max [m/s]
+            yaw_vel = 0.3    # min max [rad/s]
 
     class domain_rand(LeggedRobotCfg.domain_rand):
         randomize_friction = True # True, False
@@ -252,22 +187,23 @@ class HumanoidControllerCfg(LeggedRobotCfg):
         # Add DR for rotor inertia and angular damping
 
     class asset(LeggedRobotCfg.asset):
-        file = '{LEGGED_GYM_ROOT_DIR}/resources/robots/humanoid/urdf/humanoid_fixed_arms_sf_update.urdf'
-        keypoints = ["base"]
-        end_effectors = ['right_foot', 'left_foot']
-        foot_name = 'foot'
+        file = '{LEGGED_GYM_ROOT_DIR}/resources/robots/p73/urdf/p73_walker.urdf'
+        keypoints = ["base_link"]
+        end_effectors = ['R_Foot_Link', 'L_Foot_Link']
+        foot_name = 'Foot'
         terminate_after_contacts_on = [
-            'base',
-            'right_upper_leg',
-            'right_lower_leg',
-            'left_upper_leg',
-            'left_lower_leg',
-            'right_upper_arm',
-            'right_lower_arm',
-            'right_hand',
-            'left_upper_arm',
-            'left_lower_arm',
-            'left_hand',
+            # 'base_link',
+            'WaistYaw_Link',
+            # 'R_HipRoll_Link',
+            # 'R_HipPitch_Link',
+            # 'R_Thigh_Link',
+            # 'R_Knee_Link',
+            # 'R_AnkleRoll_Link',
+            # 'L_HipRoll_Link',
+            # 'L_HipPitch_Link',
+            # 'L_Thigh_Link',
+            # 'L_Knee_Link',
+            # 'L_AnkleRoll_Link',
         ]
 
         disable_gravity = False
@@ -284,22 +220,12 @@ class HumanoidControllerCfg(LeggedRobotCfg):
         default_dof_drive_mode = 3
 
         angular_damping = 0.1
-        rotor_inertia = [
-            0.01188,    # RIGHT LEG
-            0.01188,
-            0.01980,
-            0.07920,
-            0.04752,
-            0.01188,    # LEFT LEG
-            0.01188,
-            0.01980,
-            0.07920,
-            0.04752,
-        ]
-        apply_humanoid_jacobian = True # True, False
+        rotor_inertia = [0.96, 0.375, 0.0625, 0.375, 0.0625, 0.0625, # Motor inertia * gear ratio^2 (Hip roll 80:1, the rest 50:1)
+                         0.96, 0.375, 0.0625, 0.375, 0.0625, 0.0625]
+        apply_humanoid_jacobian = False # True, False
 
     class rewards(LeggedRobotCfg.rewards):
-        base_height_target = 0.62
+        base_height_target = 0.89
         soft_dof_pos_limit = 0.9
         soft_dof_vel_limit = 0.9
         soft_torque_limit = 0.8
@@ -329,6 +255,7 @@ class HumanoidControllerCfg(LeggedRobotCfg):
             # * Stepping rewards * #
             joint_regularization = 1.
             contact_schedule = 3.
+            foot_z_orientation = 1.0
 
         class termination_weights(LeggedRobotCfg.rewards.termination_weights):
             termination = 1.
@@ -414,7 +341,7 @@ class HumanoidControllerRunnerCfg(LeggedRobotRunnerCfg):
         policy_class_name = 'ActorCritic'
         algorithm_class_name = 'PPO'
         num_steps_per_env = 24
-        max_iterations = 5000
+        max_iterations = 30000
         run_name = 'sf'
         experiment_name = 'Humanoid_Controller'
         save_interval = 100

@@ -1,0 +1,13 @@
+
+
+
+
+3. resume
+
+python gym/scripts/train.py \
+  --task=humanoid_controller \
+  --resume \
+  --experiment_name=Humanoid_Controller \
+  --load_run=Mar21_15-52-11_sf \
+  --checkpoint=500 \
+  --headless

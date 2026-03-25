@@ -730,7 +730,24 @@ class LeggedRobot(BaseTask):
         self.num_dof = self.gym.get_asset_dof_count(robot_asset)
         self.num_bodies = self.gym.get_asset_rigid_body_count(robot_asset)
         dof_props_asset = self.gym.get_asset_dof_properties(robot_asset)
-        dof_props_asset["armature"] = self.cfg.asset.rotor_inertia
+
+        if self.num_dof == 0 or len(dof_props_asset["armature"]) == 0:
+            raise ValueError(
+                f"Asset has 0 DOFs. Please check URDF parsing and joint definitions: {asset_path}. "
+                "(xacro includes/macros are not resolved by Isaac Gym URDF loader)."
+            )
+
+        rotor_inertia = np.asarray(self.cfg.asset.rotor_inertia, dtype=dof_props_asset["armature"].dtype)
+        if rotor_inertia.ndim == 0:
+            dof_props_asset["armature"] = rotor_inertia.item()
+        elif rotor_inertia.shape[0] == self.num_dof:
+            dof_props_asset["armature"] = rotor_inertia
+        else:
+            raise ValueError(
+                f"cfg.asset.rotor_inertia length ({rotor_inertia.shape[0]}) does not match asset DOF count ({self.num_dof}) "
+                f"for asset: {asset_path}"
+            )
+
         dof_props_asset["damping"] = self.cfg.asset.angular_damping
         rigid_shape_props_asset = self.gym.get_asset_rigid_shape_properties(robot_asset)
 

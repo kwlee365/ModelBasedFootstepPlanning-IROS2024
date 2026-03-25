@@ -40,8 +40,8 @@ class HumanoidController(LeggedRobot):
         super()._init_buffers()
         # * Robot states
         self.base_height = self.root_states[:, 2:3]
-        self.right_hip_pos = self.rigid_body_state[:, self.rigid_body_idx['right_hip_yaw'], :3]
-        self.left_hip_pos = self.rigid_body_state[:, self.rigid_body_idx['left_hip_yaw'], :3]
+        self.right_hip_pos = self.rigid_body_state[:, self.rigid_body_idx['R_HipPitch_Link'], :3]
+        self.left_hip_pos = self.rigid_body_state[:, self.rigid_body_idx['L_HipPitch_Link'], :3]
         self.CoM = torch.zeros(self.num_envs, 3, dtype=torch.float, device=self.device, requires_grad=False)
         self.foot_states = torch.zeros(self.num_envs, len(self.feet_ids), 7, dtype=torch.float, device=self.device, requires_grad=False) # num_envs x (right & left foot) x (x, y, z, quat)    
         self.foot_states_right = torch.zeros(self.num_envs, 4, dtype=torch.float, device=self.device, requires_grad=False) # num_envs x (x, y, z, heading, projected_gravity)  
@@ -182,8 +182,8 @@ class HumanoidController(LeggedRobot):
         self.base_height[:] = self.root_states[:, 2:3]
         forward = quat_apply(self.base_quat, self.forward_vec)
         self.base_heading = torch.atan2(forward[:, 1], forward[:, 0]).unsqueeze(1)
-        self.right_hip_pos = self.rigid_body_state[:, self.rigid_body_idx['right_hip_yaw'], :3]
-        self.left_hip_pos = self.rigid_body_state[:, self.rigid_body_idx['left_hip_yaw'], :3]
+        self.right_hip_pos = self.rigid_body_state[:, self.rigid_body_idx['R_HipPitch_Link'], :3]
+        self.left_hip_pos = self.rigid_body_state[:, self.rigid_body_idx['L_HipPitch_Link'], :3]
         self.foot_states = self._calculate_foot_states(self.rigid_body_state[:, self.feet_ids, :7])
 
         right_foot_forward = quat_apply(self.foot_states[:,0,3:7], self.forward_vec)
@@ -214,9 +214,9 @@ class HumanoidController(LeggedRobot):
 
         naxis = 3
         self.ankle_vel_history[:,0,naxis:] = self.ankle_vel_history[:,0,:naxis]
-        self.ankle_vel_history[:,0,:naxis] = self.rigid_body_state[:, self.rigid_body_idx['right_foot'], 7:10]
+        self.ankle_vel_history[:,0,:naxis] = self.rigid_body_state[:, self.rigid_body_idx['R_Foot_Link'], 7:10]
         self.ankle_vel_history[:,1,naxis:] = self.ankle_vel_history[:,1,:naxis]
-        self.ankle_vel_history[:,1,:naxis] = self.rigid_body_state[:, self.rigid_body_idx['left_foot'], 7:10]
+        self.ankle_vel_history[:,1,:naxis] = self.rigid_body_state[:, self.rigid_body_idx['L_Foot_Link'], 7:10]
 
     def _calculate_foot_states(self, foot_states):
         foot_height_vec = torch.tensor([0., 0., -0.04]).repeat(self.num_envs, 1).to(self.device)
@@ -828,6 +828,12 @@ class HumanoidController(LeggedRobot):
         a = 1.
         tracking_rewards = k * self._neg_exp(self.step_location_offset[~self.foot_on_motion], a=a)
         return contact_rewards * tracking_rewards
+
+    def _reward_foot_z_orientation(self):
+        error = torch.norm(self.foot_projected_gravity[:, :, :2], dim=(1,2))
+        return self._negsqrd_exp(error, a=0.2)
+
+
 
 # ##################### HELPER FUNCTIONS ################################## #
 
